@@ -18,27 +18,17 @@
             </div>
         </div>
     </div>
-    <script type="module">
-        import Echo from 'laravel-echo';
-        import Pusher from 'pusher-js';
-        window.Pusher = Pusher;
-        window.Echo = new Echo({
-            broadcaster: 'reverb',
-            key: import.meta.env.VITE_REVERB_APP_KEY,
-            wsHost: import.meta.env.VITE_REVERB_HOST,
-            wsPort: import.meta.env.VITE_REVERB_PORT ?? 80,
-            wssPort: import.meta.env.VITE_REVERB_PORT ?? 443,
-            forceTLS: (import.meta.env.VITE_REVERB_SCHEME ?? 'https') === 'https',
-            enabledTransports: ['ws', 'wss'],
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            window.Echo.channel('test-channel')
+                .listen('TestBroadcast', (e) => {
+                    document.getElementById('no-events')?.remove();
+                    const div = document.createElement('div');
+                    div.className = 'border-b py-2';
+                    div.innerHTML = '<span class="text-green-600 font-mono">✓</span> ' + e.message + ' <span class="text-gray-400 text-sm">(' + e.timestamp + ')</span>';
+                    document.getElementById('events').prepend(div);
+                });
         });
-        window.Echo.channel('test-channel')
-            .listen('TestBroadcast', (e) => {
-                document.getElementById('no-events')?.remove();
-                const div = document.createElement('div');
-                div.className = 'border-b py-2';
-                div.innerHTML = '<span class="text-green-600 font-mono">✓</span> ' + e.message + ' <span class="text-gray-400 text-sm">(' + e.timestamp + ')</span>';
-                document.getElementById('events').prepend(div);
-            });
     </script>
 </body>
 </html>
